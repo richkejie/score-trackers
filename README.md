@@ -52,3 +52,7 @@ git push
 ```
 
 The site updates within a minute or two. If you don't see the change, do a hard refresh in your browser (Cmd+Shift+R on Mac).
+
+---
+
+this shit was made with Claude
