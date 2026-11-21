@@ -36,7 +36,7 @@
 
   let state = load();
   let error = null;          // message shown under the current step; not saved
-  let settingsOpen = false;  // whether the rules panel on the setup screen is expanded
+  const openPanels = {};     // which collapsible panels on the setup screen are expanded, e.g. { rules: true }
   let pendingConfirm = null; // an action waiting for "Yes" in the on-page confirm box, e.g. 'newGame'
 
   // On-page confirmations. (The browser's built-in confirm() popup is blocked
@@ -54,6 +54,19 @@
     return { bids: [null, null, null, null], tricks: [null, null], nilTricks: [null, null, null, null] };
   }
 
+  function emptyStart() {
+    return { scores: [0, 0], bags: [0, 0] };
+  }
+
+  function hasStart() {
+    return state.start.scores.some((n) => n !== 0) || state.start.bags.some((n) => n !== 0);
+  }
+
+  // Score the game so far, including any starting scores.
+  function scoreGame() {
+    return S.scoreGame(state.rounds, state.settings, state.start);
+  }
+
   // A fresh game. Pass the previous game to keep its players and rules.
   function newGame(prev) {
     return {
@@ -63,6 +76,7 @@
         { name: '', players: ['', ''] }
       ],
       settings: Object.assign({}, S.DEFAULT_SETTINGS, prev ? prev.settings : {}),
+      start: emptyStart(),     // scores and bags from before the tracker was used (game in progress)
       rounds: [],
       draft: emptyDraft(),     // the round currently being entered
       resultIndex: null,       // which round the result screen is showing
@@ -75,6 +89,7 @@
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (saved && saved.teams && saved.rounds) {
         saved.settings = Object.assign({}, S.DEFAULT_SETTINGS, saved.settings);
+        saved.start = saved.start || emptyStart(); // games saved before starting scores existed
         return saved;
       }
     } catch (e) { /* no saved game, or storage blocked */ }
@@ -168,7 +183,7 @@
     if (state.phase === 'setup') {
       html = renderSetup();
     } else {
-      const game = S.scoreGame(state.rounds, state.settings);
+      const game = scoreGame();
       html = renderScoreboard(game);
       if (state.phase === 'bidding') html += renderBidding();
       if (state.phase === 'tricks') html += renderTricks();
@@ -223,12 +238,36 @@
         ${textField('Partner', 'player:' + t + ':1', state.teams[t].players[1], 'Player ' + (t * 2 + 2))}
       </section>`).join('');
 
+    const showBags = state.settings.bagLimit > 0;
+    const startFields = [0, 1].map((t) => `
+      <div class="start-team team-${t}">
+        <h3>Team ${t + 1}</h3>
+        <div class="start-inputs">
+          <label class="field">
+            <span>Score</span>
+            <input type="number" step="1" data-bind="start:scores:${t}" value="${state.start.scores[t]}">
+          </label>
+          ${showBags ? `
+          <label class="field">
+            <span>Bags</span>
+            <input type="number" step="1" min="0" data-bind="start:bags:${t}" value="${state.start.bags[t]}">
+          </label>` : ''}
+        </div>
+      </div>`).join('');
+
     return `
       <p class="muted">Enter the players on each team. Partners sit across from each other.</p>
       ${teams}
-      <details class="card settings"${settingsOpen ? ' open' : ''}>
+      <details class="card" data-panel="start"${openPanels.start ? ' open' : ''}>
+        <summary><strong>Game already in progress?</strong></summary>
+        <div class="panel-body">
+          <p class="muted small">If you’ve been keeping score by hand, enter each team’s current score${showBags ? ' and the bags they’ve collected toward the next penalty' : ''}. Leave these at 0 for a new game.</p>
+          ${startFields}
+        </div>
+      </details>
+      <details class="card settings" data-panel="rules"${openPanels.rules ? ' open' : ''}>
         <summary><strong>Rules</strong> <span class="muted small">${esc(rulesSummary())}</span></summary>
-        <div class="settings-fields">
+        <div class="panel-body">
           ${SETTING_FIELDS.map(settingField).join('')}
           <button class="btn-small" data-action="resetRules">Reset to standard rules</button>
         </div>
@@ -420,6 +459,18 @@
       return `<tr${current}><td class="num">${i + 1}</td>${cells}<td class="actions">${edit}</td></tr>`;
     }).reverse().join('');
 
+    // The starting scores (game already in progress) go in a row below round 1.
+    const startRow = !hasStart() ? '' : `
+      <tr class="start-row">
+        <td class="num"></td>
+        ${[0, 1].map((t) => `
+          <td class="team-${t}">
+            <div><span class="muted small">Start</span> <strong>${num(state.start.scores[t])}</strong></div>
+            ${state.settings.bagLimit > 0 ? `<div class="muted small">${state.start.bags[t]} bags</div>` : ''}
+          </td>`).join('')}
+        <td></td>
+      </tr>`;
+
     return `
       <section class="card">
         <h2>Rounds</h2>
@@ -427,7 +478,7 @@
           <thead>
             <tr><th class="num">#</th><th class="team-0">${esc(teamName(0))}</th><th class="team-1">${esc(teamName(1))}</th><th></th></tr>
           </thead>
-          <tbody>${rows}</tbody>
+          <tbody>${rows}${startRow}</tbody>
         </table>
         <p class="muted small">Each cell: points this round, game total, then bid / tricks won.</p>
       </section>`;
@@ -469,6 +520,10 @@
       } else if (s.bagLimit < 0) {
         error = 'Bags before a penalty can’t be negative.';
       } else {
+        error = startError();
+      }
+      if (!error) {
+        if (s.bagLimit === 0) state.start.bags = [0, 0]; // bags can't be entered when there's no bag penalty
         state.phase = 'bidding';
         state.rounds = [];
         state.draft = emptyDraft();
@@ -585,6 +640,26 @@
     }
   };
 
+  // Check the starting scores and bags; returns an error message or null.
+  function startError() {
+    const s = state.settings;
+    for (let t = 0; t < 2; t++) {
+      const name = 'Team ' + (t + 1);
+      const score = state.start.scores[t];
+      const bags = state.start.bags[t];
+      if (score >= s.targetScore) {
+        return `${name}’s starting score must be below the winning score (${s.targetScore}).`;
+      }
+      if (s.loseEnabled && score <= s.loseScore) {
+        return `${name}’s starting score must be above the losing score (${num(s.loseScore)}).`;
+      }
+      if (s.bagLimit > 0 && (bags < 0 || bags >= s.bagLimit)) {
+        return `${name}’s starting bags must be from 0 to ${s.bagLimit - 1}.`;
+      }
+    }
+    return null;
+  }
+
   // Go back to whatever screen was showing before "Edit" was pressed.
   function leaveEdit() {
     const paused = state.editing.paused;
@@ -593,7 +668,7 @@
     state.draft = paused.draft;
     state.resultIndex = paused.resultIndex;
     // An edit may have changed who won; if so, show the final round's result.
-    const game = S.scoreGame(state.rounds, state.settings);
+    const game = scoreGame();
     if (game.winner && state.phase !== 'result') {
       state.phase = 'result';
       state.resultIndex = state.rounds.length - 1;
@@ -652,6 +727,10 @@
       }
       const n = Number(e.target.value);
       if (e.target.value !== '' && Number.isInteger(n)) state.settings[a] = n;
+    } else if (kind === 'start') {
+      // An empty box counts as 0.
+      const n = Number(e.target.value || 0);
+      if (Number.isInteger(n)) state.start[a][Number(b)] = n;
     }
     save();
   }
@@ -659,10 +738,11 @@
   app.addEventListener('input', handleBind);
   app.addEventListener('change', handleBind);
 
-  // Remember whether the rules panel is open, so redrawing doesn't close it.
+  // Remember which setup panels are open, so redrawing doesn't close them.
   app.addEventListener('toggle', (e) => {
-    if (e.target.matches('details.settings')) settingsOpen = e.target.open;
+    if (e.target.dataset.panel) openPanels[e.target.dataset.panel] = e.target.open;
   }, true);
 
+  openPanels.start = hasStart(); // reopen it if starting scores were already entered
   render();
 })();

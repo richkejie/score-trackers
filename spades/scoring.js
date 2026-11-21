@@ -131,12 +131,14 @@
 
   /*
    * Score a whole game from its list of rounds.
+   * `start` is optional: { scores: [a, b], bags: [a, b] } for a game that was
+   * already in progress (scored by hand) before the tracker was used.
    * Returns per-round results for each team, running totals, bags carried, and the winner.
    */
-  function scoreGame(rounds, settings) {
+  function scoreGame(rounds, settings, start) {
     var s = settings;
-    var totals = [0, 0];
-    var bagCount = [0, 0];
+    var totals = start ? [start.scores[0], start.scores[1]] : [0, 0];
+    var bagCount = start ? [start.bags[0], start.bags[1]] : [0, 0];
 
     var results = rounds.map(function (round) {
       return [0, 1].map(function (t) {

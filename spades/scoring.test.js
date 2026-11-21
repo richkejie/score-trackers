@@ -124,6 +124,27 @@
     eq(g.bags[0], 2, 'bags carried');
   });
 
+  test('starting scores are added to the totals', function () {
+    var g = S.scoreGame([round([3, 2, 4, 3], [6, 7])], settings(), { scores: [230, -40], bags: [0, 0] });
+    eq(g.totals[0], 230 + 51, 'team 0');
+    eq(g.totals[1], -40 + 70, 'team 1');
+    eq(g.rounds[0][0].total, 281, 'round total includes start');
+  });
+
+  test('starting bags count toward the bag penalty', function () {
+    var g = S.scoreGame([round([1, 1, 5, 6], [6, 7])], settings(), { scores: [100, 100], bags: [8, 0] });
+    eq(g.rounds[0][0].bagPenalty, 100, 'penalty');
+    eq(g.bags[0], 2, 'bags carried');
+    eq(g.totals[0], 100 + 24 - 100, 'total');
+  });
+
+  test('no rounds yet: totals are the starting scores', function () {
+    var g = S.scoreGame([], settings(), { scores: [120, 90], bags: [3, 4] });
+    eq(g.totals[0], 120, 'team 0');
+    eq(g.bags[1], 4, 'bags');
+    eq(g.winner, null, 'winner');
+  });
+
   test('bag limit of 0 means no bag penalty', function () {
     var rounds = [];
     for (var i = 0; i < 5; i++) rounds.push(round([1, 1, 5, 6], [6, 7]));
