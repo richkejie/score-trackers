@@ -43,7 +43,11 @@ node spades/scoring.test.js
 
 ## Updating the live site
 
-The live site is published from the `main` branch with GitHub Pages. To update it, commit your changes and push:
+The live site is published from the `main` branch with GitHub Pages.
+
+**If you changed any `.css` or `.js` file**, first bump the version number on the links to them. Every `<link>` and `<script>` in the HTML files ends in `?v=N` (e.g. `style.css?v=2`). Search the project for `?v=2` and replace it with `?v=3` (and so on next time). This makes browsers download the new files instead of using a stale saved copy.
+
+Then commit your changes and push:
 
 ```bash
 git add -A
