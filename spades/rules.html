@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spades Rules</title>
+  <meta name="description" content="How to play Spades: dealing, bidding, nil, playing tricks and scoring.">
+  <link rel="stylesheet" href="../style.css?v=4">
+</head>
+<body>
+  <main class="page rules">
+    <a class="back-link" href="../index.html">&larr; All games</a>
+    <h1>&spades; Spades rules</h1>
+    <p class="muted">The standard rules, which the score tracker uses by default. Many groups play with house rules; you can change the scoring values on the tracker&rsquo;s setup screen under <strong>Rules</strong>.</p>
+
+    <section class="card">
+      <h2>Players and goal</h2>
+      <ul>
+        <li>4 players in 2 teams of 2. Partners sit across from each other.</li>
+        <li>A standard 52-card deck, no jokers. Cards rank from Ace (high) down to 2.</li>
+        <li><strong>Spades are always trump.</strong></li>
+        <li>The first team to reach <strong>500 points</strong> wins.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Dealing</h2>
+      <ul>
+        <li>Deal all 13 cards to each player, one at a time.</li>
+        <li>The deal passes to the left after each round.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Bidding</h2>
+      <ul>
+        <li>Starting left of the dealer, each player bids how many tricks they expect to win, from 0 to 13.</li>
+        <li>Partners&rsquo; bids are added together. That total is the <strong>team&rsquo;s bid</strong>: the number of tricks the team must win together.</li>
+        <li><strong>Nil:</strong> a player can bid nil, promising to win <em>no</em> tricks at all. Their partner still makes their own bid.</li>
+        <li><strong>Blind nil</strong> (optional): a nil bid made <em>before looking at your cards</em>. It&rsquo;s riskier, so it&rsquo;s worth double.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Playing tricks</h2>
+      <ul>
+        <li>The player left of the dealer leads the first trick. Play goes clockwise.</li>
+        <li>You must <strong>follow suit</strong> if you can. If you can&rsquo;t, you may play any card, including a spade.</li>
+        <li>The trick is won by the highest spade played. If no spade was played, the highest card of the suit that was led wins.</li>
+        <li>The winner of a trick leads the next one.</li>
+        <li>Spades can&rsquo;t be led until they&rsquo;re <strong>broken</strong> (a spade has been played on an earlier trick), unless the leader has nothing but spades.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Scoring</h2>
+      <table class="rules-table">
+        <tbody>
+          <tr><td>Team wins at least as many tricks as it bid</td><td><strong>+10</strong> per trick bid</td></tr>
+          <tr><td>Each extra trick over the bid (a &ldquo;bag&rdquo;)</td><td><strong>+1</strong></td></tr>
+          <tr><td>Team wins fewer tricks than it bid (&ldquo;set&rdquo;)</td><td><strong>&minus;10</strong> per trick bid</td></tr>
+          <tr><td>Every 10 bags a team collects</td><td><strong>&minus;100</strong></td></tr>
+          <tr><td>Nil made (player won no tricks)</td><td><strong>+100</strong></td></tr>
+          <tr><td>Nil failed (player won any trick)</td><td><strong>&minus;100</strong></td></tr>
+          <tr><td>Blind nil made / failed</td><td><strong>+200</strong> / <strong>&minus;200</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Bags carry over from round to round. When a team reaches 10, it loses 100 points and any bags over 10 carry on toward the next penalty.</p>
+      <p>If a nil bidder wins tricks, those tricks still count toward their partner&rsquo;s bid.</p>
+      <h3>Example</h3>
+      <p>A team bids 4 + 3 = 7 and wins 9 tricks: 70 points for the bid, plus 2 bags, for <strong>72</strong>. If they had won only 6 tricks, they&rsquo;d score <strong>&minus;70</strong>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Winning and losing</h2>
+      <ul>
+        <li>The first team to reach <strong>500</strong> wins. If both teams pass 500 in the same round, the higher score wins.</li>
+        <li>A team that drops to <strong>&minus;200</strong> or below loses.</li>
+      </ul>
+    </section>
+
+    <a class="btn btn-primary btn-block" href="index.html">Start keeping score</a>
+  </main>
+  <footer class="site-footer">this shit was made with Claude</footer>
+</body>
+</html>

@@ -77,7 +77,9 @@ a { color: var(--accent); }
 
 /* --- Buttons ------------------------------------------------------------ */
 
-button {
+/* .btn makes a link look like a button. */
+button,
+.btn {
   font: inherit;
   cursor: pointer;
   border-radius: 10px;
@@ -87,7 +89,16 @@ button {
   padding: 10px 14px;
   min-height: 44px;
 }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--accent); }
 button:disabled { opacity: 0.45; cursor: default; }
+
+.btn-block { width: 100%; }
 
 .btn-primary {
   background: var(--accent);
@@ -141,12 +152,33 @@ input[type="number"] {
 /* --- Home page game list ----------------------------------------------- */
 
 .game-list { list-style: none; padding: 0; margin: 0; }
-.game-list a {
-  display: block;
+.game-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.game-list li:has(.game-link:hover),
+.game-list li:has(.game-link:focus-visible) { border-color: var(--accent); }
+.game-link {
+  flex: 1;
+  min-width: 0;
   text-decoration: none;
   color: inherit;
 }
-.game-list a:hover .card,
-.game-list a:focus-visible .card { border-color: var(--accent); }
-.game-list .card h2 { margin-bottom: 4px; }
-.game-list .card p { margin: 0; }
+.game-link h2 { margin-bottom: 4px; }
+.game-link p { margin: 0; }
+
+/* --- Rules pages ------------------------------------------------------- */
+
+.rules ul { margin: 0; padding-left: 20px; }
+.rules li + li { margin-top: 6px; }
+.rules section p:last-child { margin-bottom: 0; }
+.rules h3 { margin-top: 16px; }
+
+.rules-table { width: 100%; border-collapse: collapse; }
+.rules-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.rules-table td:last-child { text-align: right; white-space: nowrap; padding-left: 12px; }

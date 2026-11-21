@@ -18,6 +18,7 @@ index.html              Home page: the list of games
 style.css               Styles shared by every page
 spades/
   index.html            The Spades tracker page
+  rules.html            How to play Spades (linked from the home page's "Rules" button)
   spades.css            Styles used only by the Spades tracker
   spades.js             Screens and buttons (setup → bids → tricks → result → …)
   scoring.js            The scoring rules (no UI code)
@@ -39,7 +40,8 @@ node spades/scoring.test.js
 
 1. Create a folder for it (e.g. `hearts/`), using `spades/` as a starting point.
 2. Keep its scoring rules in a separate file so they can be tested.
-3. Add a link to it in the root `index.html`.
+3. Write a `rules.html` page explaining how to play (copy `spades/rules.html`).
+4. Add it to the game list in the root `index.html`, with links to its tracker and its rules page.
 
 ## Updating the live site
 
