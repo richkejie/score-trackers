@@ -1,0 +1,143 @@
+/* Shared styles for every page on the site. */
+
+:root {
+  --bg: #f4f1ea;
+  --card: #ffffff;
+  --text: #1d1d1f;
+  --muted: #6b6b70;
+  --border: #e2ddd2;
+  --accent: #1f5f4a;        /* card-table green */
+  --accent-text: #ffffff;
+  --accent-soft: #e3efe9;
+  --good: #1f7a3d;
+  --bad: #b3261e;
+  --team0: #2457a6;
+  --team1: #a63d24;
+  --radius: 14px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141615;
+    --card: #1f2321;
+    --text: #ececec;
+    --muted: #9a9e9c;
+    --border: #333836;
+    --accent: #3f9c7a;
+    --accent-text: #0d1411;
+    --accent-soft: #23332c;
+    --good: #5cc47e;
+    --bad: #f07167;
+    --team0: #7aa7ee;
+    --team1: #ee9a7a;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+}
+
+h1 { font-size: 1.6rem; margin: 8px 0 16px; }
+h2 { font-size: 1.15rem; margin: 0 0 12px; }
+h3 { font-size: 1rem; margin: 0 0 8px; }
+a { color: var(--accent); }
+
+.back-link {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.muted { color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 14px;
+  min-height: 44px;
+}
+button:disabled { opacity: 0.45; cursor: default; }
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.btn-small { min-height: 32px; padding: 4px 10px; font-size: 0.85rem; }
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.btn-row > button { flex: 1; }
+
+/* --- Forms ------------------------------------------------------------- */
+
+label { display: block; }
+
+input[type="text"],
+input[type="number"] {
+  font: inherit;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.field { margin-bottom: 10px; }
+.field > span { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+
+.error {
+  color: var(--bad);
+  font-weight: 600;
+  margin: 10px 0 0;
+}
+
+/* --- Home page game list ----------------------------------------------- */
+
+.game-list { list-style: none; padding: 0; margin: 0; }
+.game-list a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.game-list a:hover .card,
+.game-list a:focus-visible .card { border-color: var(--accent); }
+.game-list .card h2 { margin-bottom: 4px; }
+.game-list .card p { margin: 0; }

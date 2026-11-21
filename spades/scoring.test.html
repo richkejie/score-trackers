@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spades scoring tests</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    #results ul { list-style: none; padding: 0; }
+    #results li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+    #results .pass { color: var(--good); }
+    #results .fail { color: var(--bad); }
+    .summary { font-weight: 700; font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <h1>Spades scoring tests</h1>
+    <div id="results"></div>
+  </main>
+  <script src="scoring.js"></script>
+  <script src="scoring.test.js"></script>
+</body>
+</html>
